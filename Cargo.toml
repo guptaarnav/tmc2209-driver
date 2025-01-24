@@ -1,0 +1,15 @@
+[package]
+name = "tmc2209-driver"
+version = "0.1.0"
+authors = ["Arnav Gupta <arnav@agupta.org>"]
+edition = "2021"
+description = "Platform-agnostic driver crate for the Trinamic TMC2209 stepper motor driver"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+embedded-hal = "1"
+nb = "1"
+embedded-io = "0.6"
+
+
+
