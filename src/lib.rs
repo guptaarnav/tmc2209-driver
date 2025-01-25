@@ -28,10 +28,8 @@ pub use tmc2209::Tmc2209FullUartDiagnosticsAndControl;
 pub use tmc2209::Tmc2209StandaloneLegacy;
 pub use tmc2209::Tmc2209StandaloneOtpPreconfig;
 
-/// Crate prelude, re-exporting common items (optional).
 pub mod prelude {
     pub use crate::Tmc2209FullUartDiagnosticsAndControl;
     pub use crate::Tmc2209StandaloneLegacy;
     pub use crate::Tmc2209StandaloneOtpPreconfig;
-    // re-export if you want shorter import lines
 }

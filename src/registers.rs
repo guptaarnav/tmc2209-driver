@@ -52,4 +52,3 @@ pub const GCONF_TEST_MODE: u32 = 1 << 9; // not for normal use
 // Bits [4..0]: IHOLD
 // Bits [12..8]: IRUN
 // Bits [19..16]: IHOLDDELAY
-// We'll build or parse these with bit-shifts.

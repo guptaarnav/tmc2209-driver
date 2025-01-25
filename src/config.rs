@@ -1,7 +1,6 @@
 //! Configuration objects or enums for TMC2209 usage
-//! This is optional, but can help keep user settings typed.
+//! Currently not used.
 
-/// Example of a motor config struct for run/hold current, etc.
 #[derive(Debug, Clone, Copy)]
 pub struct MotorConfig {
     /// Run current in [0..31], fraction of max current

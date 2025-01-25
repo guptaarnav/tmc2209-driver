@@ -1,4 +1,4 @@
-//! TMC2209 Driver: Three Separate Structs for the Three Datasheet Modes
+//! TMC2209 Driver: Three Separate Structs for the Three Modes or Operation
 //!
 //! 1. `Tmc2209StandaloneLegacy` – Option 1 (Legacy STEP/DIR driver, no UART)
 //! 2. `Tmc2209StandaloneOtpPreconfig` – Option 2 (Standalone + OTP, same pins as Legacy)
@@ -129,7 +129,7 @@ where
 
 /// TMC2209 in "Standalone OTP Preconfig" mode.
 /// Same pin usage as Legacy mode, but we assume the TMC2209 has been
-/// pre-configured via OTP or minimal CPU-based writes. No normal UART usage.
+/// pre-configured via OTP or CPU-based writes bit-banged to TMC2209 UART input (handled outside of this driver). No normal UART usage.
 pub struct Tmc2209StandaloneOtpPreconfig<EN, STEP, DIR, DIAG, INDEX>
 where
     EN: OutputPin,
@@ -228,9 +228,6 @@ where
             None => Ok(None),
         }
     }
-
-    // The user might do minimal CPU-based writes or rely purely on OTP defaults.
-    // E.g., they might bit-bang the UART for initial config, but not normally use it.
 }
 
 // ---------------------------------------------------------------------------
@@ -240,7 +237,7 @@ where
 /// TMC2209 in "Full UART Diagnostics and Control" mode.
 ///
 /// - Requires EN, STEP, DIR, plus a UART interface
-/// - No mention of DIAG or INDEX pins here (user can wire them externally if desired).
+/// - No use of DIAG or INDEX pins here (user can wire them externally if desired).
 pub struct Tmc2209FullUartDiagnosticsAndControl<EN, STEP, DIR, SERIAL, E>
 where
     EN: OutputPin,
@@ -299,9 +296,7 @@ where
         self.step.set_low().map_err(|_| TmcError::PinError)
     }
 
-    /// Example initialization: check IFCNT, set PDN_DISABLE, etc.
-    ///
-    /// This is where you do advanced config (stealthChop vs spreadCycle, etc.)
+    /// check IFCNT, set PDN_DISABLE, etc.
     pub fn init_uart(&mut self) -> Result<(), TmcError> {
         let ifcnt_before = self.read_register(REG_IFCNT)?;
 
@@ -317,7 +312,7 @@ where
         Ok(())
     }
 
-    /// Example: set run/hold current in IHOLD_IRUN via UART.
+    /// set run/hold current in IHOLD_IRUN via UART.
     pub fn set_current(&mut self, irun: u8, ihold: u8, ihold_delay: u8) -> Result<(), TmcError> {
         if irun > 31 || ihold > 31 || ihold_delay > 15 {
             return Err(TmcError::VerificationError);
@@ -330,7 +325,7 @@ where
         Ok(())
     }
 
-    /// Low-level 32-bit register write via UART.
+    /// Low-level 32-bit register write via UART (blocking).
     fn write_register(&mut self, reg: u8, value: u32) -> Result<(), TmcError> {
         let packet = build_write_packet(self.slave_address, reg, value);
         for &b in &packet {
@@ -339,7 +334,7 @@ where
         Ok(())
     }
 
-    /// Low-level 32-bit register read via UART.
+    /// Low-level 32-bit register read via UART (blocking).
     fn read_register(&mut self, reg: u8) -> Result<u32, TmcError> {
         let packet = build_read_packet(self.slave_address, reg);
         for &b in &packet {
