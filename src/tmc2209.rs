@@ -1,4 +1,6 @@
-//! TMC2209 Driver: Three Separate Structs for the Three Modes or Operation
+//! TMC2209 Driver: Platform-agnostic driver crate for the Trinamic TMC2209 stepper motor driver
+//!
+//! Three separate structs for the three modes of operation:
 //!
 //! 1. `Tmc2209StandaloneLegacy` – Option 1 (Legacy STEP/DIR driver, no UART)
 //! 2. `Tmc2209StandaloneOtpPreconfig` – Option 2 (Standalone + OTP, same pins as Legacy)
